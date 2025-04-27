@@ -6,7 +6,7 @@
   "framework": null,
   "version": 2,
   "builds": [
-    { "src": "package.json", "use": "@vercel/next" }
+    { "src": "package.json", "use": "@vercel/static-build" }
   ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
