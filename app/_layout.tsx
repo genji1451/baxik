@@ -1,12 +1,15 @@
+import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 import { ErrorBoundary } from "./error-boundary";
 import { colors } from "@/constants/colors";
 import { useTelegramFullscreen } from "@/components/useTelegramFullscreen";
+import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTelegramInsets } from "@/components/useTelegramInsets";
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -41,79 +44,58 @@ export default function RootLayout() {
   }
 
   return (
-    <ErrorBoundary>
-      <RootLayoutNav />
-    </ErrorBoundary>
+    <SafeAreaProvider>
+      <ErrorBoundary>
+        <RootLayoutNav />
+      </ErrorBoundary>
+    </SafeAreaProvider>
   );
 }
 
 function RootLayoutNav() {
+  const insets = useSafeAreaInsets();
+  const tgInsets = useTelegramInsets();
+  
+  // Use the maximum value between SafeArea insets and Telegram insets
+  const bottomInset = Math.max(insets.bottom, tgInsets.bottom);
+  
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: colors.background,
-        },
-        headerTintColor: colors.text,
-        headerTitleStyle: {
-          fontWeight: '600',
-        },
-        contentStyle: {
-          backgroundColor: colors.background,
-        },
-        animation: Platform.OS === 'android' ? 'fade_from_bottom' : 'default',
-      }}
-    >
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen 
-        name="transaction/new" 
-        options={{ 
-          presentation: 'modal',
-          title: 'Новая транзакция',
-          headerShown: true,
-        }} 
-      />
-      <Stack.Screen 
-        name="transaction/[id]" 
-        options={{ 
-          presentation: 'card',
-          title: 'Детали транзакции',
-          headerShown: true,
-        }} 
-      />
-      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-    </Stack>
+    <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: bottomInset }}>
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: colors.background,
+          },
+          headerTintColor: colors.text,
+          headerTitleStyle: {
+            fontWeight: '600',
+          },
+          contentStyle: {
+            backgroundColor: colors.background,
+          },
+          animation: Platform.OS === 'android' ? 'fade_from_bottom' : 'default',
+        }}
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="transaction/new" 
+          options={{ 
+            presentation: 'modal',
+            title: 'Новая транзакция',
+            headerShown: true,
+          }} 
+        />
+        <Stack.Screen 
+          name="transaction/[id]" 
+          options={{ 
+            presentation: 'card',
+            title: 'Детали транзакции',
+            headerShown: true,
+          }} 
+        />
+        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+      </Stack>
+    </View>
   );
-}
-
-// Rename the local function to avoid conflict
-function useTelegramFullscreenLocal() {
-  useEffect(() => {
-    // Check if Telegram WebApp API is available
-    const tg = (window as any).Telegram?.WebApp;
-    if (!tg) {
-      console.warn("Telegram WebApp API is not available.");
-      return;
-    }
-
-    // Request fullscreen if not already in fullscreen
-    if (!tg.isFullscreen && typeof tg.requestFullscreen === 'function') {
-      tg.requestFullscreen();
-    }
-
-    // Optional: Listen for fullscreen changes
-    const onFullscreenChanged = () => {
-      if (!tg.isFullscreen && typeof tg.requestFullscreen === 'function') {
-        tg.requestFullscreen();
-      }
-    };
-
-    tg.onEvent && tg.onEvent('fullscreenChanged', onFullscreenChanged);
-
-    // Cleanup
-    return () => {
-      tg.offEvent && tg.offEvent('fullscreenChanged', onFullscreenChanged);
-    };
-  }, []);
 }
