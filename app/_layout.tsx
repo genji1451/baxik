@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { Platform } from "react-native";
 import { ErrorBoundary } from "./error-boundary";
 import { colors } from "@/constants/colors";
+import { useTelegramFullscreen } from "@/components/useTelegramFullscreen";
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -32,6 +33,8 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useTelegramFullscreen();
 
   if (!loaded) {
     return null;
