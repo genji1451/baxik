@@ -86,3 +86,34 @@ function RootLayoutNav() {
     </Stack>
   );
 }
+
+// Rename the local function to avoid conflict
+function useTelegramFullscreenLocal() {
+  useEffect(() => {
+    // Check if Telegram WebApp API is available
+    const tg = (window as any).Telegram?.WebApp;
+    if (!tg) {
+      console.warn("Telegram WebApp API is not available.");
+      return;
+    }
+
+    // Request fullscreen if not already in fullscreen
+    if (!tg.isFullscreen && typeof tg.requestFullscreen === 'function') {
+      tg.requestFullscreen();
+    }
+
+    // Optional: Listen for fullscreen changes
+    const onFullscreenChanged = () => {
+      if (!tg.isFullscreen && typeof tg.requestFullscreen === 'function') {
+        tg.requestFullscreen();
+      }
+    };
+
+    tg.onEvent && tg.onEvent('fullscreenChanged', onFullscreenChanged);
+
+    // Cleanup
+    return () => {
+      tg.offEvent && tg.offEvent('fullscreenChanged', onFullscreenChanged);
+    };
+  }, []);
+}
