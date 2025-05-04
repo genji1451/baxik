@@ -25,6 +25,13 @@ export default function TabLayout() {
           fontWeight: '600',
           color: colors.text,
         },
+        tabBarLabelStyle: {
+          textAlign: 'center',
+        },
+        tabBarItemStyle: {
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
       }}
     >
       <Tabs.Screen

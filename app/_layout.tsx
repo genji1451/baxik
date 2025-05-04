@@ -56,7 +56,7 @@ function RootLayoutNav() {
   const insets = useSafeAreaInsets();
   const tgInsets = useTelegramInsets();
   
-  const bottomInset = Math.max(insets.bottom, tgInsets.bottom) + 10;
+  const bottomInset = Math.max(insets.bottom, tgInsets.bottom) + 30;
   const topInset = Math.max(insets.top, tgInsets.top);
   
   return (
@@ -124,7 +124,7 @@ function RootLayoutNav() {
       {/* Нижний отступ серого цвета */}
       <View style={{ 
         height: bottomInset, 
-        backgroundColor: '#f0f0f0', // Серый цвет для нижнего меню
+        backgroundColor: '#F2F2F2', // Серый цвет для меню
         position: 'absolute',
         bottom: 0,
         left: 0,
