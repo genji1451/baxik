@@ -71,7 +71,6 @@ function RootLayoutNav() {
           headerTitleStyle: {
             fontWeight: '600',
           },
-          // Центрирование заголовков
           headerTitleAlign: 'center',
           contentStyle: {
             backgroundColor: colors.background,

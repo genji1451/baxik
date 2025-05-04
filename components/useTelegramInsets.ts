@@ -24,7 +24,7 @@ export function useTelegramInsets() {
             const diff = window.innerHeight - tg.viewportStableHeight;
             
             // Add extra padding (30px) to ensure elements aren't covered by bottom UI
-            const extraBottomPadding = 30;
+            const extraBottomPadding = 1;
             setBottom(Math.max(diff, 0) + extraBottomPadding);
             
             // Отступ сверху: фиксированные 30px для навигации
