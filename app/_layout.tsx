@@ -56,12 +56,12 @@ function RootLayoutNav() {
   const insets = useSafeAreaInsets();
   const tgInsets = useTelegramInsets();
   
-  // Use the maximum value between SafeArea insets and Telegram insets
-  // Add fixed 30px padding for web version
-  const bottomInset = Math.max(insets.bottom, tgInsets.bottom) + 10;
+  // Отступы сверху и снизу
+  const bottomInset = Math.max(insets.bottom, tgInsets.bottom) + 30;
+  const topInset = Math.max(insets.top, tgInsets.top);
   
   return (
-    <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: bottomInset }}>
+    <View style={{ flex: 1, paddingTop: topInset, paddingBottom: bottomInset }}>
       <Stack
         screenOptions={{
           headerStyle: {
@@ -71,6 +71,8 @@ function RootLayoutNav() {
           headerTitleStyle: {
             fontWeight: '600',
           },
+          // Центрирование заголовков
+          headerTitleAlign: 'center',
           contentStyle: {
             backgroundColor: colors.background,
           },
