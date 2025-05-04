@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export function useTelegramInsets() {
-  const [bottom, setBottom] = useState(0);
+  const [bottom, setBottom] = useState(30);
   
   useEffect(() => {
     // Check if code is running in browser and Telegram WebApp is available
@@ -21,7 +21,11 @@ export function useTelegramInsets() {
             // Calculate the difference between window height and telegram viewportStableHeight
             // This gives us the space occupied by Telegram elements
             const diff = window.innerHeight - tg.viewportStableHeight;
-            setBottom(diff > 0 ? diff : 0);
+            
+            // Add extra padding (30px) to ensure elements aren't covered by bottom UI
+            const extraPadding = 30;
+            
+            setBottom(Math.max(diff, 0) + extraPadding);
           }
         }
         
