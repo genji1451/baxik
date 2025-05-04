@@ -14,12 +14,14 @@ export default function TabLayout() {
           borderTopColor: colors.border,
           elevation: 0,
           shadowOpacity: 0,
+          paddingTop: 5,
         },
         headerStyle: {
           backgroundColor: colors.background,
           elevation: 0,
           shadowOpacity: 0,
           borderBottomWidth: 0,
+          height: 60,
         },
         headerTitleStyle: {
           fontWeight: '600',
@@ -32,6 +34,7 @@ export default function TabLayout() {
           justifyContent: 'center',
           alignItems: 'center',
         },
+        headerTitleAlign: 'center',
       }}
     >
       <Tabs.Screen
