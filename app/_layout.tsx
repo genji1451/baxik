@@ -56,9 +56,11 @@ function RootLayoutNav() {
   const insets = useSafeAreaInsets();
   const tgInsets = useTelegramInsets();
   
-  // Увеличиваем верхний отступ на 30px
-  const topInset = Math.max(insets.top, tgInsets.top) + 30; // Увеличиваем отступ сверху
-  const bottomInset = Math.max(insets.bottom, tgInsets.bottom) + 1;
+  const topInset = Math.max(insets.top, tgInsets.top) + 30;
+  
+  // Уменьшаем размер нижнего отступа, чтобы не перекрывать меню
+  // Используем только базовый отступ без дополнительного увеличения
+  const bottomInset = Math.max(insets.bottom, tgInsets.bottom);
   
   return (
     <View style={{ flex: 1 }}>
@@ -73,11 +75,12 @@ function RootLayoutNav() {
         zIndex: 10
       }} />
       
-      {/* Основной контент с увеличенным верхним отступом */}
+      {/* Основной контент */}
       <View style={{ 
         flex: 1, 
-        marginTop: topInset, // Увеличенный отступ сверху
-        marginBottom: bottomInset 
+        marginTop: topInset,
+        // Нижний отступ для контента - оставляем место для меню + базовый отступ
+        paddingBottom: bottomInset + 60 // 60px для меню + базовый отступ
       }}>
         <Stack
           screenOptions={{
@@ -122,15 +125,16 @@ function RootLayoutNav() {
         </Stack>
       </View>
       
-      {/* Нижний отступ серого цвета */}
+      {/* Нижний отступ - только для нижней границы экрана, не перекрывающий меню */}
       <View style={{ 
         height: bottomInset, 
-        backgroundColor: '#F2F2F2', // Серый цвет для меню
+        backgroundColor: '#1E1E1E', // Цвет как вы указали
         position: 'absolute',
         bottom: 0,
         left: 0,
         right: 0,
-        zIndex: 10
+        // zIndex меньше, чем у меню, чтобы не перекрывать его
+        zIndex: 1
       }} />
     </View>
   );
