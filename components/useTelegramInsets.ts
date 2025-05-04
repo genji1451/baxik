@@ -28,7 +28,7 @@ export function useTelegramInsets() {
             setBottom(Math.max(diff, 0) + extraBottomPadding);
             
             // Отступ сверху: фиксированные 30px для навигации
-            const extraTopPadding = 50;
+            const extraTopPadding = 70;
             setTop(extraTopPadding);
           }
         }
