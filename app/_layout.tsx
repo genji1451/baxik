@@ -56,48 +56,81 @@ function RootLayoutNav() {
   const insets = useSafeAreaInsets();
   const tgInsets = useTelegramInsets();
   
-  // Отступы сверху и снизу
-  const bottomInset = Math.max(insets.bottom, tgInsets.bottom) + 30;
+  const bottomInset = Math.max(insets.bottom, tgInsets.bottom) + 10;
   const topInset = Math.max(insets.top, tgInsets.top);
   
   return (
-    <View style={{ flex: 1, paddingTop: topInset, paddingBottom: bottomInset }}>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: colors.background,
-          },
-          headerTintColor: colors.text,
-          headerTitleStyle: {
-            fontWeight: '600',
-          },
-          headerTitleAlign: 'center',
-          contentStyle: {
-            backgroundColor: colors.background,
-          },
-          animation: Platform.OS === 'android' ? 'fade_from_bottom' : 'default',
-        }}
-      >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen 
-          name="transaction/new" 
-          options={{ 
-            presentation: 'modal',
-            title: 'Новая транзакция',
-            headerShown: true,
-          }} 
-        />
-        <Stack.Screen 
-          name="transaction/[id]" 
-          options={{ 
-            presentation: 'card',
-            title: 'Детали транзакции',
-            headerShown: true,
-          }} 
-        />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-      </Stack>
+    <View style={{ flex: 1 }}>
+      {/* Верхний отступ черного цвета */}
+      <View style={{ 
+        height: topInset, 
+        backgroundColor: colors.background, // Черный фон
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 10
+      }} />
+      
+      {/* Основной контент */}
+      <View style={{ 
+        flex: 1, 
+        marginTop: topInset, 
+        marginBottom: bottomInset 
+      }}>
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: colors.background,
+            },
+            headerTintColor: colors.text,
+            headerTitleStyle: {
+              fontWeight: '600',
+              textAlign: 'center',
+              width: '100%',
+            },
+            headerTitleContainerStyle: {
+              left: 0,
+              right: 0,
+            },
+            contentStyle: {
+              backgroundColor: colors.background,
+            },
+            animation: Platform.OS === 'android' ? 'fade_from_bottom' : 'default',
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen 
+            name="transaction/new" 
+            options={{ 
+              presentation: 'modal',
+              title: 'Новая транзакция',
+              headerShown: true,
+            }} 
+          />
+          <Stack.Screen 
+            name="transaction/[id]" 
+            options={{ 
+              presentation: 'card',
+              title: 'Детали транзакции',
+              headerShown: true,
+            }} 
+          />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+        </Stack>
+      </View>
+      
+      {/* Нижний отступ серого цвета */}
+      <View style={{ 
+        height: bottomInset, 
+        backgroundColor: '#f0f0f0', // Серый цвет для нижнего меню
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 10
+      }} />
     </View>
   );
 }

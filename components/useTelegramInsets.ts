@@ -24,11 +24,11 @@ export function useTelegramInsets() {
             const diff = window.innerHeight - tg.viewportStableHeight;
             
             // Add extra padding (30px) to ensure elements aren't covered by bottom UI
-            const extraBottomPadding = 1;
+            const extraBottomPadding = 10;
             setBottom(Math.max(diff, 0) + extraBottomPadding);
             
             // Отступ сверху: фиксированные 30px для навигации
-            const extraTopPadding = 30;
+            const extraTopPadding = 50;
             setTop(extraTopPadding);
           }
         }
