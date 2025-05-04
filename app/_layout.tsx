@@ -58,7 +58,7 @@ function RootLayoutNav() {
   
   // Use the maximum value between SafeArea insets and Telegram insets
   // Add fixed 30px padding for web version
-  const bottomInset = Math.max(insets.bottom, tgInsets.bottom) + 30;
+  const bottomInset = Math.max(insets.bottom, tgInsets.bottom) + 10;
   
   return (
     <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: bottomInset }}>

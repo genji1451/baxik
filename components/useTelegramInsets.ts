@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 export function useTelegramInsets() {
   const [bottom, setBottom] = useState(30);
+  const [top, setTop] = useState(30);
   
   useEffect(() => {
     // Check if code is running in browser and Telegram WebApp is available
@@ -23,9 +24,12 @@ export function useTelegramInsets() {
             const diff = window.innerHeight - tg.viewportStableHeight;
             
             // Add extra padding (30px) to ensure elements aren't covered by bottom UI
-            const extraPadding = 30;
+            const extraBottomPadding = 30;
+            setBottom(Math.max(diff, 0) + extraBottomPadding);
             
-            setBottom(Math.max(diff, 0) + extraPadding);
+            // Отступ сверху: фиксированные 30px для навигации
+            const extraTopPadding = 30;
+            setTop(extraTopPadding);
           }
         }
         
@@ -38,5 +42,5 @@ export function useTelegramInsets() {
     }
   }, []);
   
-  return { bottom };
+  return { bottom, top };
 } 
