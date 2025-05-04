@@ -10,11 +10,9 @@ export default function TabLayout() {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.inactive,
         tabBarStyle: {
-          backgroundColor: colors.card,
-          borderTopColor: colors.border,
-          elevation: 0,
-          shadowOpacity: 0,
-          paddingTop: 5,
+          backgroundColor: colors.background,
+          height: 60,
+          paddingBottom: 10,
         },
         headerStyle: {
           backgroundColor: colors.background,
@@ -28,11 +26,15 @@ export default function TabLayout() {
           color: colors.text,
         },
         tabBarLabelStyle: {
-          textAlign: 'center',
+          fontSize: 12,
+          paddingBottom: 5,
         },
         tabBarItemStyle: {
           justifyContent: 'center',
           alignItems: 'center',
+        },
+        tabBarIconStyle: {
+          marginBottom: -5,
         },
         headerTitleAlign: 'center',
       }}
