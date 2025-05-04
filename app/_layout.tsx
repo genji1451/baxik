@@ -58,47 +58,32 @@ function RootLayoutNav() {
   
   const topInset = Math.max(insets.top, tgInsets.top) + 30;
   
-  // Уменьшаем размер нижнего отступа, чтобы не перекрывать меню
-  // Используем только базовый отступ без дополнительного увеличения
-  const bottomInset = Math.max(insets.bottom, tgInsets.bottom);
-  
   return (
-    <View style={{ flex: 1 }}>
-      {/* Верхний отступ черного цвета */}
+    // Используем Container View с цветом нижнего отступа в качестве фона всего приложения
+    <View style={{ flex: 1, backgroundColor: '#1E1E1E' }}>
+      {/* Верхний отступ */}
       <View style={{ 
         height: topInset, 
-        backgroundColor: colors.background, // Черный фон
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 10
+        backgroundColor: colors.background 
       }} />
       
-      {/* Основной контент */}
+      {/* Основной контент с фоном основного цвета приложения */}
       <View style={{ 
         flex: 1, 
-        marginTop: topInset,
-        // Нижний отступ для контента - оставляем место для меню + базовый отступ
-        paddingBottom: bottomInset + 60 // 60px для меню + базовый отступ
+        backgroundColor: colors.background
       }}>
         <Stack
           screenOptions={{
-            // Дополнительный отступ для заголовка
+            headerTitleAlign: 'center',
             headerStyle: {
               backgroundColor: colors.background,
-              height: 60, // Увеличиваем высоту заголовка
             },
-            // Центрирование заголовка
-            headerTitleAlign: 'center',
+            headerTintColor: colors.text,
             headerTitleStyle: {
               fontWeight: '600',
-              fontSize: 18, // Увеличиваем размер шрифта
             },
-            // Дополнительные стили контента
             contentStyle: {
               backgroundColor: colors.background,
-              paddingTop: 10, // Дополнительный отступ для контента
             },
             animation: Platform.OS === 'android' ? 'fade_from_bottom' : 'default',
           }}
@@ -125,17 +110,10 @@ function RootLayoutNav() {
         </Stack>
       </View>
       
-      {/* Нижний отступ - только для нижней границы экрана, не перекрывающий меню */}
-      <View style={{ 
-        height: bottomInset, 
-        backgroundColor: '#1E1E1E', // Цвет как вы указали
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        // zIndex меньше, чем у меню, чтобы не перекрывать его
-        zIndex: 1
-      }} />
+      {/* 
+        Нижний отступ нам больше не нужен - вместо него используется 
+        backgroundColor контейнера, который виден под нижним меню 
+      */}
     </View>
   );
 }
