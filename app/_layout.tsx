@@ -10,6 +10,9 @@ import { colors } from "@/constants/colors";
 import { useTelegramFullscreen } from "@/components/useTelegramFullscreen";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTelegramInsets } from "@/components/useTelegramInsets";
+import { useTelegramUser } from "@/components/useTelegramUser";
+import { adManager } from "@/utils/adManager";
+import { AdServiceProvider } from "@/components/AdService";
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -23,6 +26,9 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     ...FontAwesome.font,
   });
+  
+  // Получаем пользователя для показа рекламы
+  const user = useTelegramUser();
 
   useEffect(() => {
     if (error) {
@@ -44,11 +50,13 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ErrorBoundary>
-        <RootLayoutNav />
-      </ErrorBoundary>
-    </SafeAreaProvider>
+    <AdServiceProvider showAdOnMount={true}>
+      <SafeAreaProvider>
+        <ErrorBoundary>
+          <RootLayoutNav />
+        </ErrorBoundary>
+      </SafeAreaProvider>
+    </AdServiceProvider>
   );
 }
 

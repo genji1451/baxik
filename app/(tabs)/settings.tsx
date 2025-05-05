@@ -9,10 +9,12 @@ import {
   Trash2, 
   ChevronRight, 
   HelpCircle, 
-  Info
+  Info,
+  Radio
 } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import CurrencySelector from '@/components/CurrencySelector';
+import { TestAdButton } from '@/components/TestAdButton';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -31,6 +33,10 @@ export default function SettingsScreen() {
   
   const handleCurrencySelect = (currency: string) => {
     updateSettings({ currency });
+  };
+
+  const handleNavigateToTestAds = () => {
+    router.push('/test-ads' as any);
   };
   
   return (
@@ -90,6 +96,40 @@ export default function SettingsScreen() {
                 Это удалит все ваши транзакции и настройки
               </Text>
             </View>
+          </TouchableOpacity>
+        </View>
+        
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Тестирование</Text>
+          
+          <View style={styles.settingItem}>
+            <View style={[styles.settingIconContainer, { backgroundColor: '#FF4500' + '30' }]}>
+              <Radio size={20} color="#FF4500" />
+            </View>
+            <View style={styles.settingContent}>
+              <Text style={styles.settingLabel}>
+                Тестирование рекламы GramADS
+              </Text>
+              <Text style={styles.settingDescription}>
+                Нажмите кнопку ниже, чтобы протестировать показ рекламы
+              </Text>
+            </View>
+          </View>
+          
+          <View style={styles.adButtonContainer}>
+            <TestAdButton />
+          </View>
+          
+          <TouchableOpacity 
+            style={[styles.settingItem, { marginTop: 10 }]}
+            onPress={handleNavigateToTestAds}
+          >
+            <View style={styles.settingContent}>
+              <Text style={[styles.settingLabel, { textAlign: 'center' }]}>
+                Открыть расширенное тестирование
+              </Text>
+            </View>
+            <ChevronRight size={20} color={colors.textLight} />
           </TouchableOpacity>
         </View>
         
@@ -179,5 +219,10 @@ const styles = StyleSheet.create({
   settingValue: {
     fontSize: 14,
     color: colors.textLight,
+  },
+  adButtonContainer: {
+    backgroundColor: colors.card,
+    paddingBottom: 20,
+    alignItems: 'center',
   },
 });
