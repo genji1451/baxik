@@ -4,7 +4,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { Platform, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Platform, View, Text, StyleSheet, TouchableOpacity, Alert, Linking } from "react-native";
 import { ErrorBoundary } from "./error-boundary";
 import { colors } from "@/constants/colors";
 import { useTelegramFullscreen } from "@/components/useTelegramFullscreen";
@@ -30,6 +30,35 @@ export default function RootLayout() {
   // Получаем пользователя для показа рекламы
   const user = useTelegramUser();
 
+  // Эффект для проверки доступа к данным пользователя
+  useEffect(() => {
+    // Проверяем только в браузере
+    if (typeof window !== 'undefined') {
+      const tg = (window as any).Telegram?.WebApp;
+      
+      // Если API Telegram доступен, но нет данных пользователя
+      if (tg && (!tg.initDataUnsafe || !tg.initDataUnsafe.user)) {
+        console.warn("Нет доступа к данным пользователя Telegram");
+        
+        // Только в веб-версии показываем предупреждение
+        if (Platform.OS === 'web') {
+          // Отложенное предупреждение для улучшения UX
+          const timer = setTimeout(() => {
+            // Альтернатива Alert для веб
+            if (typeof window.alert === 'function') {
+              window.alert(
+                "Для полноценной работы приложения требуется доступ к данным пользователя. " +
+                "Убедитесь, что приложение открыто через Telegram и имеет необходимые разрешения."
+              );
+            }
+          }, 2000);
+          
+          return () => clearTimeout(timer);
+        }
+      }
+    }
+  }, []);
+
   useEffect(() => {
     if (error) {
       console.error(error);
@@ -50,7 +79,7 @@ export default function RootLayout() {
   }
 
   return (
-    <AdServiceProvider showAdOnMount={true}>
+    <AdServiceProvider showAdOnMount={user !== null}>
       <SafeAreaProvider>
         <ErrorBoundary>
           <RootLayoutNav />

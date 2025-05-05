@@ -10,7 +10,8 @@ import {
   ChevronRight, 
   HelpCircle, 
   Info,
-  Radio
+  Radio,
+  MessageCircleQuestion
 } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import CurrencySelector from '@/components/CurrencySelector';
@@ -37,6 +38,10 @@ export default function SettingsScreen() {
 
   const handleNavigateToTestAds = () => {
     router.push('/test-ads' as any);
+  };
+
+  const handleNavigateToTelegramInfo = () => {
+    router.push('/telegram-info' as any);
   };
   
   return (
@@ -145,6 +150,22 @@ export default function SettingsScreen() {
               <Text style={styles.settingValue}>1.0.0</Text>
             </View>
           </View>
+          
+          <TouchableOpacity 
+            style={styles.settingItem}
+            onPress={handleNavigateToTelegramInfo}
+          >
+            <View style={styles.settingIconContainer}>
+              <MessageCircleQuestion size={20} color={colors.primary} />
+            </View>
+            <View style={styles.settingContent}>
+              <Text style={styles.settingLabel}>Информация о Telegram</Text>
+              <Text style={styles.settingDescription}>
+                Проверить статус подключения и доступ к данным
+              </Text>
+            </View>
+            <ChevronRight size={20} color={colors.textLight} />
+          </TouchableOpacity>
           
           <TouchableOpacity style={styles.settingItem}>
             <View style={styles.settingIconContainer}>
