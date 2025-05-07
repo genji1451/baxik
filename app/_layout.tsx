@@ -1,7 +1,7 @@
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { Platform, View, Text, StyleSheet, TouchableOpacity, Alert, Linking } from "react-native";
@@ -13,6 +13,7 @@ import { useTelegramInsets } from "@/components/useTelegramInsets";
 import { useTelegramUser } from "@/components/useTelegramUser";
 import { adManager } from "@/utils/adManager";
 import { AdServiceProvider } from "@/components/AdService";
+import { initializeTelegramWebApp } from "@/utils/telegramInitializer";
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -32,28 +33,30 @@ export default function RootLayout() {
 
   // Эффект для проверки доступа к данным пользователя
   useEffect(() => {
-    // Проверяем только в браузере
     if (typeof window !== 'undefined') {
       const tg = (window as any).Telegram?.WebApp;
       
-      // Если API Telegram доступен, но нет данных пользователя
-      if (tg && (!tg.initDataUnsafe || !tg.initDataUnsafe.user)) {
+      // Проверяем, открыто ли приложение в Telegram
+      if (!tg) {
+        router.replace('/auth' as any); 
+        return;
+      }
+      
+      // Если нет доступа к данным пользователя
+      if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+        // Это значит что приложение открыто в Telegram, но без нужных прав
         console.warn("Нет доступа к данным пользователя Telegram");
         
-        // Только в веб-версии показываем предупреждение
+        // Отображаем сообщение и предлагаем перейти к боту правильно
         if (Platform.OS === 'web') {
-          // Отложенное предупреждение для улучшения UX
-          const timer = setTimeout(() => {
-            // Альтернатива Alert для веб
-            if (typeof window.alert === 'function') {
-              window.alert(
-                "Для полноценной работы приложения требуется доступ к данным пользователя. " +
-                "Убедитесь, что приложение открыто через Telegram и имеет необходимые разрешения."
-              );
+          setTimeout(() => {
+            if (window.confirm(
+              "Для работы приложения требуется доступ к данным пользователя. " +
+              "Перейти к боту и запустить приложение оттуда?"
+            )) {
+              router.replace('/auth' as any);
             }
-          }, 2000);
-          
-          return () => clearTimeout(timer);
+          }, 1000);
         }
       }
     }
@@ -74,6 +77,17 @@ export default function RootLayout() {
 
   useTelegramFullscreen();
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const tg = initializeTelegramWebApp();
+      if (tg) {
+        console.log('Telegram WebApp инициализирован:', tg.initDataUnsafe?.user?.id);
+      } else {
+        console.warn('Не удалось инициализировать Telegram WebApp');
+      }
+    }
+  }, []);
+
   if (!loaded) {
     return null;
   }
@@ -81,9 +95,9 @@ export default function RootLayout() {
   return (
     <AdServiceProvider showAdOnMount={user !== null}>
       <SafeAreaProvider>
-        <ErrorBoundary>
-          <RootLayoutNav />
-        </ErrorBoundary>
+    <ErrorBoundary>
+      <RootLayoutNav />
+    </ErrorBoundary>
       </SafeAreaProvider>
     </AdServiceProvider>
   );
@@ -109,42 +123,43 @@ function RootLayoutNav() {
         flex: 1, 
         backgroundColor: colors.background
       }}>
-        <Stack
-          screenOptions={{
+    <Stack
+      screenOptions={{
             headerTitleAlign: 'center',
-            headerStyle: {
-              backgroundColor: colors.background,
-            },
-            headerTintColor: colors.text,
-            headerTitleStyle: {
-              fontWeight: '600',
-            },
-            contentStyle: {
-              backgroundColor: colors.background,
-            },
-            animation: Platform.OS === 'android' ? 'fade_from_bottom' : 'default',
-          }}
-        >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen 
-            name="transaction/new" 
-            options={{ 
-              presentation: 'modal',
-              title: 'Новая транзакция',
-              headerShown: true,
-            }} 
-          />
-          <Stack.Screen 
-            name="transaction/[id]" 
-            options={{ 
-              presentation: 'card',
-              title: 'Детали транзакции',
-              headerShown: true,
-            }} 
-          />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-        </Stack>
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTintColor: colors.text,
+        headerTitleStyle: {
+          fontWeight: '600',
+        },
+        contentStyle: {
+          backgroundColor: colors.background,
+        },
+        animation: Platform.OS === 'android' ? 'fade_from_bottom' : 'default',
+      }}
+    >
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen 
+        name="transaction/new" 
+        options={{ 
+          presentation: 'modal',
+          title: 'Новая транзакция',
+          headerShown: true,
+        }} 
+      />
+      <Stack.Screen 
+        name="transaction/[id]" 
+        options={{ 
+          presentation: 'card',
+          title: 'Детали транзакции',
+          headerShown: true,
+        }} 
+      />
+      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="auth" options={{ headerShown: false }} />
+    </Stack>
       </View>
       
       {/* 
@@ -153,4 +168,22 @@ function RootLayoutNav() {
       */}
     </View>
   );
+}
+
+export function YandexRtbHeadScript() {
+  useEffect(() => {
+    // Добавляем загрузчик только один раз
+    if (!document.getElementById("yandex-rtb-loader")) {
+      const script1 = document.createElement("script");
+      script1.innerHTML = "window.yaContextCb=window.yaContextCb||[]";
+      document.head.appendChild(script1);
+
+      const script2 = document.createElement("script");
+      script2.src = "https://yandex.ru/ads/system/context.js";
+      script2.async = true;
+      script2.id = "yandex-rtb-loader";
+      document.head.appendChild(script2);
+    }
+  }, []);
+  return null;
 }
